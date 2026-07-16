@@ -1,80 +1,120 @@
 # 🚀 WebBrain Ultimate Edition (3-In-1)
 
-Chào mừng ní đến với phiên bản **WebBrain Ultimate Edition (3-trong-1)** tích hợp hoàn chỉnh và tối ưu hóa tối đa. Gói cài đặt này hợp nhất 3 cấu phần quan trọng vào một thư mục sạch sẽ duy nhất:
-1.  **AI Browser Agent gốc (WebBrain Chat)**: Trò chuyện trực tiếp với trang web, hỗ trợ đa LLM.
-2.  **Model Context Protocol (MCP) Server**: Kết nối WebSocket thời gian thực (Port `8545`) điều phối 27 công cụ duyệt web và đặc quyền gỡ lỗi từ xa (CDP).
-3.  **Stealth Shopee Crawler**: Tự động cào dữ liệu Shopee vượt CAPTCHA, kết hợp quét ảnh CDN/video độ phân giải cao và lưu trữ local.
+Chào mừng bạn đến với **WebBrain Ultimate Edition (3-trong-1)** - giải pháp AI Browser Agent tích hợp hoàn chỉnh và tối ưu hóa tối đa. Gói cài đặt này hợp nhất 3 cấu phần quan trọng vào một thư mục phân phối duy nhất, được kế thừa và phát triển từ các mã nguồn mở chất lượng cao của cộng đồng.
 
 ---
 
-## 📂 Cấu Trúc Thư Mục Đóng Gói
+## 📂 Cấu Trúc Gói Đóng Gói
 ```text
 3in1/
-├── extension/          # Mã nguồn Chrome Extension đã tích hợp Tab Bar & 3 luồng hoạt động
-├── server/             # WebSocket MCP Server (đã thêm tool upload_file, loại bỏ node_modules)
-└── scripts/            # Script Node.js tải tài nguyên local tự động
+├── extension/          # Chrome Extension tích hợp Tab Bar & 3 luồng giao diện hoạt động
+├── server/             # WebSocket MCP Server (đã tích hợp upload_file qua CDP, không chứa node_modules)
+└── scripts/            # Script Node.js tối giản tự động tải tài nguyên local
 ```
 
 ---
 
-## 🛠️ Hướng Dẫn Cài Đặt & Vận Hành
+## 🛠️ Hướng Dẫn Cài Đặt & Vận Hành Nhanh
 
 ### Bước 1: Nạp Chrome Extension
-1.  Mở trình duyệt Google Chrome và truy cập: `chrome://extensions/`
-2.  Bật **Chế độ dành cho nhà phát triển (Developer mode)** ở góc trên bên phải.
-3.  Nhấp vào **Tải tiện ích đã giải nén (Load unpacked)** ở góc trên bên trái.
-4.  Chọn thư mục con: `g:\03_BAITAP\browser-use-agent\3in1\extension`
-5.  Extension WebBrain Ultimate sẽ xuất hiện. Nhấp vào icon Tiện ích trên thanh công cụ Chrome để mở **Sidebar panel**.
+1.  Truy cập trang quản lý tiện ích: `chrome://extensions/` trên Google Chrome.
+2.  Kích hoạt **Chế độ dành cho nhà phát triển (Developer mode)** ở góc trên cùng bên phải.
+3.  Nhấp vào nút **Tải tiện ích đã giải nén (Load unpacked)** ở góc trên bên trái.
+4.  Chọn đường dẫn thư mục: `3in1/extension`
+5.  Mở Sidebar của WebBrain để bắt đầu sử dụng.
 
 ### Bước 2: Khởi Chạy Local MCP Server
-1.  Mở Terminal (cmd hoặc powershell) tại thư mục `server`:
+1.  Mở Terminal tại thư mục `server`:
     ```bash
-    cd g:\03_BAITAP\browser-use-agent\3in1\server
+    cd 3in1/server
     ```
-2.  Cài đặt các gói phụ thuộc cần thiết (MCP SDK & ws):
+2.  Cài đặt các thư viện cần thiết:
     ```bash
     npm install
     ```
-3.  Khởi chạy Server:
+3.  Khởi chạy WebSocket Server:
     ```bash
     npm start
-    # Hoặc: node index.js
     ```
-    *Server sẽ chạy và lắng nghe kết nối WebSocket tại `ws://localhost:8545`.*
-4.  **Kiểm tra:** Quay lại Sidebar trên Chrome, nhấp vào tab **MCP Server**. Bạn sẽ thấy chấm trạng thái chuyển sang màu xanh lá cây 🟢 **CONNECTED** báo hiệu kết nối thành công!
+    *(Mặc định Server chạy trên cổng `ws://localhost:8545`)*
+4.  **Kiểm tra:** Quay lại Sidebar ➔ Tab **MCP Server** ➔ Trạng thái hiển thị 🟢 **CONNECTED**.
 
 ### Bước 3: Vận Hành Shopee Crawler & Tải Tài Nguyên
 1.  Chọn tab **Shopee Crawler** trên Sidebar.
-2.  Nhập các URL sản phẩm Shopee cần cào dữ liệu.
-3.  Điền API Key Gemini (hoặc OpenAI compatible endpoint) và nhấn **Bắt đầu Crawl**.
-4.  **Tải ảnh & video về máy local:** Sau khi cào xong, xuất file kết quả JSON (ví dụ: `shopee_scraped.json`). Mở terminal và chạy script tải ảnh/video tự động:
+2.  Dán danh sách các link sản phẩm Shopee cần cào.
+3.  Nhập API Key Gemini (hoặc OpenAI Endpoint) ➔ Nhấn **Bắt đầu Crawl**.
+4.  Khi hoàn tất, xuất tệp kết quả JSON (ví dụ: `shopee_scraped.json`). Mở terminal và chạy lệnh tải toàn bộ ảnh/video gốc về máy:
     ```bash
-    node g:\03_BAITAP\browser-use-agent\3in1\scripts\download-media.js "C:/path/to/your/shopee_scraped.json"
+    node ../scripts/download-media.js "C:/path/to/your/shopee_scraped.json"
     ```
-    *Toàn bộ ảnh CDN và video gốc sẽ được tự động lưu về thư mục `3in1/downloads/` phân chia rõ ràng theo từng tên sản phẩm.*
+    *Ảnh CDN và video giới thiệu sẽ được lưu tự động trong thư mục `3in1/downloads/` theo từng thư mục tên sản phẩm.*
 
 ---
 
-## 🌟 Các Tính Năng & Cải Tiến Đã Được Tích Hợp
+## 📋 Chi Tiết Các Công Cụ Kỹ Thuật Theo Từng Luồng Hoạt Động
 
-*   **Hiệu Ứng Viền Sáng Mờ Ảo MCP (Debounced Glow):** Viền gradient nhấp nháy sẽ duy trì liên tục trong suốt chuỗi hành động gõ chữ/click của Agent và chỉ tự động tắt đi sau khi Agent dừng hoạt động được 8 giây (tránh việc bật/tắt chập chờn sau mỗi 1.2 giây như bản gốc).
-*   **Mở Tab Cào Thông Minh:** Tab cào Shopee mới sẽ tự động được tạo ngay bên cạnh tab hiện tại (trong cùng Window) và đưa vào cùng một **Nhóm tab (tabGroup)** nếu ní đang sử dụng nhóm tab, giúp trình duyệt cực kỳ gọn gàng.
-*   **Không Tự Đóng Tab Khi Xong:** Tab cào cuối cùng sẽ được giữ nguyên và viền chuyển sang **màu xanh dương** báo hiệu hoàn tất thay vì tự động tắt đi để ní dễ dàng kiểm tra kết quả.
-*   **Giải Nghĩa 27 Công Cụ MCP bằng Tiếng Việt:** Click vào bất kỳ công cụ nào trong tab MCP Server ở Sidebar để đọc ngay mô tả chi tiết, dễ hiểu về khái niệm và cách thức hoạt động của công cụ đó.
-*   **Hỗ Trợ Upload File CDP (`upload_file`):** Tích hợp công cụ upload file đặc quyền vào cả MCP Server và Chrome Extension sử dụng API `chrome.debugger` để bypass sandbox bảo mật của Chrome.
-*   **Lưu Trạng Thái Tab Hoạt Động:** Tự động ghi nhớ tab giao diện ní đang mở dở (Chat / MCP / Crawler) khi ní đóng/mở lại Sidebar.
+Hệ thống hoạt động song song trên 3 luồng độc lập, cung cấp bộ công cụ từ tương tác ngữ cảnh thô đến can thiệp sâu hệ thống:
+
+### 1. Luồng AI Browser Agent (Tab 1 - WebBrain Chat)
+Hoạt động như một trợ lý hội thoại trực tiếp với nội dung trang web hiện tại thông qua các đề xuất hành động (Recommended Actions):
+*   **Chat with Page:** Phân tích ngữ cảnh, trả lời câu hỏi dựa trên văn bản hiển thị của tab đang hoạt động.
+*   **Page Summarization:** Tóm tắt nhanh nội dung bài viết, tài liệu nghiên cứu dài.
+*   **Task Planning:** Phác thảo kế hoạch và tự động hóa các thao tác cơ bản dựa trên prompt tự nhiên của người dùng.
+
+### 2. Luồng Model Context Protocol (Tab 2 - WebSocket MCP Server)
+Xuất bản **28 công cụ hệ thống** ra WebSocket Server ở cổng `8545` để các Agent bên ngoài (như Claude, Gemini, IDE) kết nối và điều phối trình duyệt từ xa. Danh sách công cụ bao gồm:
+
+*   **Nhóm Tương Tác DOM Chính Xác (Accessibility Tree):**
+    *   `get_accessibility_tree`: Đọc cấu trúc cây trợ năng của trang hiện tại, tạo ra các mã định danh `ref_id` duy nhất và ổn định cho mỗi phần tử.
+    *   `click_ax`: Bấm chính xác tuyệt đối vào phần tử DOM bằng `ref_id` (tránh lệch tọa độ hoặc lỗi cuộn trang).
+    *   `type_ax`: Gõ văn bản vào ô nhập liệu bằng `ref_id`.
+    *   `set_field`: Điền văn bản nhanh và tùy chọn nhấn phím Enter (kết hợp click + type).
+    *   `hover`: Di chuyển con trỏ chuột ảo lên trên phần tử bằng `ref_id`.
+    *   `get_selection`: Trích xuất nhanh đoạn văn bản đang được người dùng bôi đen.
+*   **Nhóm Điều Hướng & Trạng Thế Mạng:**
+    *   `navigate`: Chuyển hướng tab đến một liên kết URL đích cụ thể.
+    *   `new_tab`: Tạo một tab mới và tự động nhóm vào phân vùng WebBrain.
+    *   `go_back` / `go_forward`: Quay lại hoặc đi tiếp trong lịch sử duyệt tab.
+    *   `wait_for_stable`: Chờ mạng lưới tĩnh lặng và trang web hoàn tất kết xuất (render).
+*   **Nhóm Thao Tác Cửa Sổ & Giao Diện:**
+    *   `resize_window`: Thay đổi kích thước cửa sổ hiển thị của Chrome.
+    *   `get_window_info`: Lấy thông tin kích thước và danh sách tab hiện tại.
+    *   `screenshot`: Chụp ảnh màn hình khu vực hiển thị (Viewport) của trang.
+*   **Nhóm Quản Lý Tệp & Tải Xuống:**
+    *   `list_downloads`: Tìm kiếm lịch sử các tệp tin đã tải xuống.
+    *   `download_files`: Tải tệp từ liên kết URL trực tiếp thông qua trình quản lý tải xuống của Chrome.
+    *   `upload_file` *(Đặc Quyền CDP)*: Sử dụng API `chrome.debugger` gắn CDP để gửi lệnh `DOM.setFileInputFiles` đưa các file local từ máy lên trang web (bypass hoàn toàn sandbox bảo mật).
+*   **Nhóm Thao Tác DOM Dự Phòng (CSS Selector):**
+    *   `click` / `type_text`: Thực hiện click và gõ chữ dựa trên CSS selector truyền thống hoặc index khi `ref_id` không tồn tại.
+    *   `wait_for_element`: Đợi cho đến khi phần tử khớp với CSS Selector xuất hiện trên trang.
+    *   `get_interactive_elements`: Quét nhanh các phần tử tương tác thô kèm chỉ mục index trên DOM.
+    *   `extract_data`: Trích xuất nhanh dữ liệu có cấu trúc như bảng biểu hoặc link.
+    *   `read_page` / `read_page_source`: Đọc văn bản thô hiển thị hoặc lấy toàn bộ mã nguồn HTML (`outerHTML`).
+*   **Nhóm Thực Thi Nâng Cao:**
+    *   `execute_js`: Khởi chạy và thực thi một khối mã JavaScript bất đồng bộ động trong ngữ cảnh của trang (nhận tham số callback `resolve`).
+
+### 3. Luồng Shopee Crawler (Tab 3 - Stealth Crawler)
+Vận hành một hệ thống cào dữ liệu Shopee có cấu trúc, tích hợp các cơ chế mô phỏng sinh học để tránh bị chặn:
+*   **Stealth Humanize:** Tự động giả lập hành vi cuộn chuột tự nhiên (Wave scroll) và di chuyển con trỏ chuột ngẫu nhiên trên trang để vượt qua các thuật toán phát hiện bot.
+*   **AI Data Parsing:** Chụp ảnh màn hình kết hợp gửi text thô đến các LLM (Gemini, DeepSeek) để phân tích và trả về cấu trúc JSON chuẩn gồm 6 trường dữ liệu: *Name, Price, Sold, Rating, Brand, Description*.
+*   **Media Link Extraction:** Tự động chạy mã JavaScript cô lập để nhặt toàn bộ mảng link ảnh CDN chất lượng cao của sản phẩm (`Images`) và đường dẫn video sản phẩm (`Video`).
+
+---
+
+## 🌟 Các Điểm Cải Tiến Độc Quyền Trong Bản Ultimate
+
+1.  **Hiệu ứng viền nhấp nháy liên tục (Debounced Glow Border):** Khi chạy các tác vụ MCP, viền sáng gradient tím bao quanh tab sẽ liên tục nhấp nháy và tự động duy trì. Viền chỉ tắt đi sau khi hệ thống hoàn tất toàn bộ chuỗi công việc và nhàn rỗi (idle) trong 8 giây.
+2.  **Mở tab thông minh đưa vào nhóm tab:** Khi bấm cào Shopee, tab cào mới sẽ được tạo ngay bên cạnh tab hiện tại. Nếu tab hiện tại nằm trong một nhóm tab (tabGroup), tab cào sẽ được tự động đưa vào chung nhóm đó để giữ trình duyệt ngăn nắp.
+3.  **Không tự đóng tab cào:** Giữ nguyên tab cào ở trang sản phẩm cuối cùng sau khi hoàn tất, đồng thời đổi viền sáng sang màu xanh dương báo hiệu thành công.
+4.  **Giải nghĩa Tiếng Việt trực quan:** Tích hợp bộ giải nghĩa khái niệm và công dụng cho 28 công cụ MCP ngay trên giao diện Sidebar.
 
 ---
 
 ## 💖 Lời Cảm Ơn & Nguồn Gốc (Credits)
 
-Dự án WebBrain Ultimate Edition này được phát triển, tùy biến và hợp nhất dựa trên các mã nguồn mở tuyệt vời của cộng đồng. Chúng mình xin gửi lời cảm ơn và sự trân trọng sâu sắc tới các tác giả gốc:
+Dự án **WebBrain Ultimate Edition (3-In-1)** này được phát triển, tùy biến và đóng gói dựa trên các đóng góp mở tuyệt vời của cộng đồng. Chúng tôi xin gửi lời tri ân sâu sắc tới:
 
-1.  **Dự án WebBrain (AI Browser Agent)**:
-    *   **Tác giả/Tổ chức**: [webbrain-one](https://github.com/webbrain-one/webbrain)
-    *   **Đóng góp**: Cung cấp toàn bộ nền tảng mã nguồn Chrome Extension gốc, giao diện Sidebar mượt mà, công nghệ trích xuất Accessibility Tree và các mô-đun AI Agent xuất sắc.
-2.  **Mã nguồn MCP Server Fork**:
-    *   **Đóng góp**: Cung cấp cấu trúc WebSocket kết nối chuẩn MCP SDK để điều khiển trình duyệt từ bên ngoài.
+*   **Dự Án Gốc WebBrain**: Phát triển bởi [webbrain-one](https://github.com/webbrain-one/webbrain) - nền tảng Chrome Extension AI Agent xuất sắc.
+*   **Bản Fork WebBrain MCP của tác giả**: Được lưu trữ và đóng góp bởi [nqtruong136/webbrain](https://github.com/nqtruong136/webbrain) - cung cấp nền móng kết nối WebSocket MCP Server đầu tiên.
 
-*Sự sáng tạo và đóng góp mở của các tác giả là nền tảng cốt lõi giúp tụi mình có thể tùy biến và xây dựng nên phiên bản Ultimate 3-trong-1 mạnh mẽ này!*
-
+*Mã nguồn mở là cầu nối sáng tạo, xin chân thành cảm ơn các đóng góp của các tác giả!*
