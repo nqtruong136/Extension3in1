@@ -2,6 +2,7 @@
 // WEBBRAIN MCP SERVER - LOCAL NODE.JS CONNECTOR (FULL CAPABILITIES)
 // ==============================================================================
 
+import { execSync } from "child_process";
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import {
@@ -10,8 +11,41 @@ import {
 } from "@modelcontextprotocol/sdk/types.js";
 import { WebSocketServer } from "ws";
 
+// HÀM TỰ ĐỘNG GIẢI PHÓNG PORT BỊ CHIẾM DỤNG BỞI TIẾN TRÌNH CŨ
+function freePort(port) {
+  try {
+    if (process.platform === "win32") {
+      const output = execSync(`netstat -ano | findstr :${port}`, { encoding: "utf8" });
+      const currentPid = process.pid;
+      const pidsToKill = new Set();
+
+      for (const line of output.split("\n")) {
+        if (line.includes("LISTENING")) {
+          const parts = line.trim().split(/\s+/);
+          const pid = parseInt(parts[parts.length - 1], 10);
+          if (pid && pid !== currentPid) {
+            pidsToKill.add(pid);
+          }
+        }
+      }
+
+      for (const pid of pidsToKill) {
+        try {
+          execSync(`taskkill /F /PID ${pid}`, { stdio: "ignore" });
+          console.error(`🧹 [Auto-Recovery] Đã dọn dẹp tiến trình cũ (PID ${pid}) đang chiếm cổng ${port}.`);
+        } catch (_) {}
+      }
+    } else {
+      execSync(`lsof -t -i:${port} | grep -v ${process.pid} | xargs kill -9`, { stdio: "ignore" });
+    }
+  } catch (err) {
+    // Không tìm thấy tiến trình chiếm cổng hoặc lỗi lệnh không ảnh hưởng
+  }
+}
+
 // 1. KHỞI TẠO WEBSOCKET SERVER CHO CHROMIUM EXTENSION KẾT NỐI
 const WS_PORT = 8545;
+freePort(WS_PORT);
 const wss = new WebSocketServer({ port: WS_PORT });
 
 let activeExtensionSocket = null;
