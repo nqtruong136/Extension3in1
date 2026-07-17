@@ -57,11 +57,14 @@ npm install
   claude mcp add webbrain -- node C:/path/to/3in1/server/index.js
   ```
 
-* **Khởi chạy thủ công (Dev / Debugging)**:
+> 💡 **Lưu ý quan trọng:** Khi bạn đã thêm cấu hình `mcpServers` vào IDE hoặc chạy lệnh `claude mcp add`, IDE / AI Agent sẽ **tự động kích hoạt** MCP Server (`node index.js`) ngầm mỗi khi khởi động. Do đó, bạn **KHÔNG CẦN** chạy lệnh `npm start` thủ công trong Terminal nữa để tránh bị đụng cổng WebSocket `8545` (`EADDRINUSE`).
+
+* **Khởi chạy thủ công (Chỉ dùng khi Dev / Debug không qua IDE)**:
   ```bash
   cd 3in1/server
   npm start
   ```
+  *(Chỉ mở khi test trực tiếp từ terminal mà không khai báo file `mcpServers` trong IDE).*
 
 #### 3. Kiểm tra kết nối:
 1. **Phía Trình duyệt:** Quay lại Sidebar Extension ➔ Tab **MCP Server** ➔ Trạng thái hiển thị 🟢 **CONNECTED** (kết nối thành công cổng WebSocket `ws://localhost:8545`).
