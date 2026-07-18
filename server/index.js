@@ -44,7 +44,7 @@ function freePort(port) {
 }
 
 // 1. KHỞI TẠO WEBSOCKET SERVER CHO CHROMIUM EXTENSION KẾT NỐI
-const WS_PORT = 8545;
+const WS_PORT = 8546;
 freePort(WS_PORT);
 const wss = new WebSocketServer({ port: WS_PORT });
 

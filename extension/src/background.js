@@ -2270,9 +2270,9 @@ async function connectWebSocket() {
   }
   
   mcpStatus = "connecting";
-  logMcp("System", "Đang kết nối tới WebSocket Server ws://localhost:8545...", true);
+  logMcp("System", "Đang kết nối tới WebSocket Server ws://localhost:8546...", true);
   
-  mcpSocket = new WebSocket("ws://localhost:8545");
+  mcpSocket = new WebSocket("ws://localhost:8546");
   
   mcpSocket.onopen = () => {
     mcpStatus = "connected";
@@ -3228,7 +3228,7 @@ chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
 
 async function handleMcpMessage3in1(req, sender, sendResponse) {
   if (req.action === 'GET_STATUS') {
-    sendResponse({ status: mcpStatus, port: 8545, tools: mcpTools, logs: mcpLogs });
+    sendResponse({ status: mcpStatus, port: 8546, tools: mcpTools, logs: mcpLogs });
   } else if (req.action === 'RECONNECT') {
     connectWebSocket();
     sendResponse({ ok: true });
