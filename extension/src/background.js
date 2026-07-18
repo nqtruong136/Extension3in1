@@ -2318,12 +2318,13 @@ async function connectWebSocket() {
 // Bắt đầu kết nối WebSocket MCP khi khởi động background
 connectWebSocket();
 
-// Hàm đảm bảo tab thuộc nhóm "WebBrain-MCP"
+// Hàm đảm bảo tab thuộc nhóm "WebBrain-MCP" hoặc "WebBrain"
 async function ensureTabInGroupMCP(tabId) {
   try {
-    const groups = await chrome.tabGroups.query({ title: "WebBrain-MCP" });
-    if (groups.length > 0) {
-      const groupId = groups[0].id;
+    const groups = await chrome.tabGroups.query({});
+    const existing = groups.find(g => g.title === "WebBrain-MCP" || g.title === "WebBrain");
+    if (existing) {
+      const groupId = existing.id;
       const tab = await chrome.tabs.get(tabId);
       if (tab.groupId !== groupId) {
         await chrome.tabs.group({ groupId: groupId, tabIds: [tabId] });
@@ -2361,8 +2362,32 @@ let mcpVisualIndicatorTimeout = null;
 async function handleToolExecutionMCP(toolName, params = {}, tabId = null) {
   let targetTabId = tabId;
   if (!targetTabId) {
-    const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    targetTabId = activeTab?.id;
+    // 1. Nếu có nhóm tab WebBrain ("WebBrain-MCP" hoặc "WebBrain"), giới hạn tác vụ trong nhóm tab đó
+    if (chrome.tabGroups) {
+      try {
+        const groups = await chrome.tabGroups.query({});
+        const webBrainGroup = groups.find(g => g.title === "WebBrain-MCP" || g.title === "WebBrain");
+        if (webBrainGroup) {
+          const groupTabs = await chrome.tabs.query({ groupId: webBrainGroup.id });
+          if (groupTabs.length > 0) {
+            const activeInGroup = groupTabs.find(t => t.active);
+            if (activeInGroup) {
+              targetTabId = activeInGroup.id;
+            } else {
+              targetTabId = groupTabs[groupTabs.length - 1].id;
+            }
+          }
+        }
+      } catch (e) {
+        console.warn("⚠️ Lỗi truy vấn nhóm tab WebBrain:", e);
+      }
+    }
+
+    // 2. Dự phòng: Nếu chưa có nhóm tab WebBrain nào, mới lấy tab đang active hiện tại
+    if (!targetTabId) {
+      const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      targetTabId = activeTab?.id;
+    }
   }
 
   if (!targetTabId) {
